@@ -1,0 +1,6 @@
+- name: Install php modules
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: "{{ php_modules }}"

@@ -1,0 +1,57 @@
+- name: Install mariadb-server service
+  apt:
+    name: mariadb-server
+    update_cache: yes
+    state: latest
+
+- name: Install mariadb-client service
+  apt:
+    name: mariadb-client
+    update_cache: yes
+    state: latest
+
+- name: Change root user password
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: ''
+    name: root
+    password: "{{ db_root_password }}"
+    priv: '*.*:ALL,GRANT'
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Removes all anonymouse user accounts
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ db_root_password }}"
+    name: ''
+    host_all: yes
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Delete test database
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ db_root_password }}"
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create wordpress db user
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ db_root_password }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: '{{ db_name }}.*:ALL,GRANT'
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  
+- name: Create wordpress db
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ db_root_password }}"
+    name: "{{ db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+

@@ -1,0 +1,4 @@
+db_root_password: "password"
+db_name: "wordpress"
+db_user: "wordpress-user"
+db_password: "1234"
